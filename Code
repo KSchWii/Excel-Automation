@@ -1,0 +1,50 @@
+'''
+Igor "Kiwi" Araújo with ChatGPT
+13/09/2023
+Pre-install openpyxl and also pdfplumber with pip.
+To do this, open CMD and install pip using this command: "get-pip.py" 
+and then you will be able to install the desired libraries 
+using these commands: "pip install openpyxl" and "pip install pdfplumber".
+Take this code and run in VSCode application.
+'''
+
+import openpyxl
+import pdfplumber
+
+# Open your PDF archive
+pdf_file = 'yourarchive.pdf'
+# Define keywords to identify the desired information
+keyw_1 = 'name:'
+keyw_2 = 'tel:'
+keyw_3 = 'addres:'
+# Initialize variables to store information
+name = ''
+tel = ''
+adress = ''
+# Extract the text from PDF
+with pdfplumber.open(pdf_file) as pdf:
+    first_page = pdf.pages[0]  
+    # Use the first page (index 0) or adjuste as needed
+    complete_text = first_page.extract_text()
+    # Search for keywords in the text and extract the corresponding information
+    if keyw_1 in complete_text:
+        nome = complete_text.split(keyw_1)[1].split(keyw_2)[0].strip()
+    if keyw_2 in complete_text:
+        telefone = complete_text.split(keyw_2)[1].split(keyw_3)[0].strip()
+    if keyw_3 in complete_text:
+        endereco = complete_text.split(keyw_3)[1].strip()
+
+# Create a new Excel file and add the information
+output_file = 'output.xlsx'
+workbook = openpyxl.Workbook()
+sheet = workbook.active
+# Write information in Excel cells
+sheet['A1'] = 'name'
+sheet['B1'] = 'tel'
+sheet['C1'] = 'adress'
+sheet['A2'] = name
+sheet['B2'] = tel
+sheet['C2'] = adress
+# Save the Excel file
+workbook.save(output_file)
+print(f'The information was saved in "{output_file}".')
